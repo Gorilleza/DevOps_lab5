@@ -1,0 +1,24 @@
+---
+- name: Install zsh and test Ansible
+  hosts: local
+  connection: local
+  tasks:
+    - name: Check if zsh is installed (macOS specific)
+      shell: "which zsh"
+      register: zsh_check
+      ignore_errors: yes
+
+    - name: Display zsh status
+      debug:
+        msg: "zsh already installed at {{ zsh_check.stdout }}"
+      when: zsh_check.rc == 0
+
+    - name: Create a test file to prove Ansible works
+      file:
+        path: /tmp/ansible_test.txt
+        state: touch
+
+    - name: Write text to the file
+      copy:
+        content: "Ansible playbook executed successfully!\n"
+        dest: /tmp/ansible_test.txt
